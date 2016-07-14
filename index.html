@@ -63,109 +63,123 @@ function parsetext(){
 			//Split by single space
 			var arr_input_text = input_by_line[i].split(" ");
 			
-			//Check Format
-			if(!CheckFormat(arr_input_text)){
-				arr_error[i] = input_by_line[i];
-				continue;
-			}
-			
-			/*
-			Input format
-			arr_input_text[0] //column1 1  (Number)
-			arr_input_text[1] //column1 B6
-			arr_input_text[2] //column2 424Y
-			arr_input_text[3] //column3 16MAY
-			arr_input_text[4] //column4 M
-			arr_input_text[5] //column5 LAXJFK
-			arr_input_text[6] //column6 SS1
-			arr_input_text[7] //column7 1250P
-			arr_input_text[8] //column8 925P
-			arr_input_text[9] //column9 /DCB6 (17MAY)
-			arr_input_text[10] //column10 /E (T)
-			rr_input_text[11] //column11 (/DCAA)
-			rr_input_text[12] //column12 (/E)
-			*/
-			/***Input adjustment***/
-			//In case column 2 and 3 are combined, split it.
-			if(arr_input_text[1].length > 2){
-				arr_input_text.splice(2,0,arr_input_text[1].substr(2,arr_input_text[1].length));
-				arr_input_text[1] = arr_input_text[1].substr(0,2);
-			}
-	
-			//In case column 3 (after parsed in the previous adjustment) includes *, split it. 
-			if(arr_input_text[4].substr(1,1) == '*'){
-				arr_input_text.splice(5,0,arr_input_text[4].substr(2,arr_input_text[4].length));
-				arr_input_text[4] = arr_input_text[4].substr(0,1);
-			}
+			//Check if the line should be skipped
+			if(!CheckSkipLine(arr_input_text)){
 
-			//In case column 4 (after parsed in the previous adjustment) includes *, split it.
-			if(arr_input_text[5].substr(6,1) == '*'){
-				arr_input_text.splice(6,0,arr_input_text[5].substr(7,arr_input_text[5].length));
-				arr_input_text[5] = arr_input_text[5].substr(0,6);
-			}			
-			/***End of input adjustment***/
-			
-			/*** Get flight ***/
-			var	r_airline = arr_input_text[1];  
-			var r_airline_num = arr_input_text[2].replace(/\D/g, "");
-			var r_DOW = GetDOW(arr_input_text[4]);
-			
-			/*** Get date ***/
-			var r_dep_day = pad(arr_input_text[3].replace(/\D/g, ""),2);
-			var r_dep_day_suffix = AddSuffix(r_dep_day);
-			var	r_dep_month = arr_input_text[3].replace(/[^a-z]/gi, "");  
-			var r_dep_date = " " + GetNumMonth(r_dep_month) + "/" + r_dep_day; //+ r_dep_day_suffix;
-			
-			/*** Get departure ***/
-			var r_dep = arr_input_text[5].substr(0,3);
-			var r_dep_time = pad(arr_input_text[7].replace(/\D/g, ""),4);
-			r_dep_time = parseInt(r_dep_time.substr(0,2),10) + ":" + r_dep_time.substr(2,4);
-			var r_dep_time_am_pm = arr_input_text[7].replace(/[^a-z]/gi, "");
-			r_dep_time_am_pm = getAMPM(r_dep_time_am_pm);
-			
-			/*** Get Arrival ***/
-			var r_arv = arr_input_text[5].substr(3,3);
-			var r_arv_time = pad(arr_input_text[8].replace(/\D/g, ""),4);
-			r_arv_time = parseInt(r_arv_time.substr(0,2),10) + ":" + r_arv_time.substr(2,4);
-			var r_arv_time_am_pm = arr_input_text[8].replace(/[^a-z]/gi, "");
-			r_arv_time_am_pm = getAMPM(r_arv_time_am_pm);
-			//Show date if deperture date and arrival date is different
-			var r_arv_date = "";
-			if (typeof GetDOW(arr_input_text[10]) != 'undefined'){
-				var r_arv_day = pad(arr_input_text[9].replace(/\D/g, ""),2);
-				var r_arv_day_suffix = AddSuffix(r_arv_day);
-				var	r_arv_month = arr_input_text[9].replace(/[^a-z]/gi, ""); 
-				//r_arv_date = " (" + r_arv_month + " " + r_arv_day + r_arv_day_suffix +")";
-				r_arv_date = " (" + GetNumMonth(r_arv_month) + "/" + r_arv_day +")";
-			}
-			
-			//Generate single line result
-			contents_single += "<tr>";
-			contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_dep_date + "</td>";
-			contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
-			contents_single += "<td style='width:300px;text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ") " + r_dep_time + " " + r_dep_time_am_pm + "</td>";
-			contents_single += "<td style='width:300px;text-align:left;padding-right:10px'>" + GetAirPort(r_arv) + " (" + r_arv + ") " + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
-			contents_single += "</tr>";
-			
-			//Generate multi lines result
-			contents_multi += "<tr>";
-			contents_multi += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_dep_date + "</td>";				
-			contents_multi += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
-			contents_multi += "<td style='width:200px;text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ")</td>";
-			contents_multi += "<td style='width:200px;text-align:left'>" + GetAirPort(r_arv) + " (" + r_arv + ")</td>";
-			contents_multi += "</tr>";
-			contents_multi += "<tr>";
-			contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_DOW + "</td>";
-			contents_multi += "<td style='text-align:left;padding-right:10px'></td>";
-			contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_dep_time + " " + r_dep_time_am_pm + "</td>";
-			contents_multi += "<td style='text-align:left'>" + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
-			contents_multi += "</tr>";
+				//Check Format
+				if(!CheckFormat(arr_input_text)){
+					arr_error[i] = input_by_line[i];
+					continue;
+				}
 				
-			//Add airline array
-			if(arr_air_lines.indexOf(r_airline) == -1){
-				arr_air_lines[cnt_air_lines] = r_airline;
-				cnt_air_lines++;
-			}				
+				/*
+				Input format
+				arr_input_text[0] //column1 1  (Number)
+				arr_input_text[1] //column1 B6
+				arr_input_text[2] //column2 424Y
+				arr_input_text[3] //column3 16MAY
+				arr_input_text[4] //column4 M
+				arr_input_text[5] //column5 LAXJFK
+				arr_input_text[6] //column6 SS1
+				arr_input_text[7] //column7 1250P
+				arr_input_text[8] //column8 925P
+				arr_input_text[9] //column9 /DCB6 (17MAY)
+				arr_input_text[10] //column10 /E (T)
+				rr_input_text[11] //column11 (/DCAA)
+				rr_input_text[12] //column12 (/E)
+				*/
+				/***Input adjustment***/
+				//In case column 2 and 3 are combined, split it.
+				if(arr_input_text[1].length > 2){
+					arr_input_text.splice(2,0,arr_input_text[1].substr(2,arr_input_text[1].length));
+					arr_input_text[1] = arr_input_text[1].substr(0,2);
+				}
+		
+				//In case column 3 (after parsed in the previous adjustment) includes *, split it. 
+				if(arr_input_text[4].substr(1,1) == '*'){
+					arr_input_text.splice(5,0,arr_input_text[4].substr(2,arr_input_text[4].length));
+					arr_input_text[4] = arr_input_text[4].substr(0,1);
+				}
+
+				//In case column 4 (after parsed in the previous adjustment) includes *, split it.
+				if(arr_input_text[5].substr(6,1) == '*'){
+					arr_input_text.splice(6,0,arr_input_text[5].substr(7,arr_input_text[5].length));
+					arr_input_text[5] = arr_input_text[5].substr(0,6);
+				}			
+				/***End of input adjustment***/
+				
+				/*** Get flight ***/
+				var	r_airline = arr_input_text[1];  
+				var r_airline_num = arr_input_text[2].replace(/\D/g, "");
+				var r_DOW = GetDOW(arr_input_text[4]);
+				
+				/*** Get date ***/
+				var r_dep_day = pad(arr_input_text[3].replace(/\D/g, ""),2);
+				var r_dep_day_suffix = AddSuffix(r_dep_day);
+				var	r_dep_month = arr_input_text[3].replace(/[^a-z]/gi, "");  
+				var r_dep_date = " " + GetNumMonth(r_dep_month) + "/" + r_dep_day; //+ r_dep_day_suffix;
+				
+				/*** Get departure ***/
+				var r_dep = arr_input_text[5].substr(0,3);
+				var r_dep_time = pad(arr_input_text[7].replace(/\D/g, ""),4);
+				r_dep_time = parseInt(r_dep_time.substr(0,2),10) + ":" + r_dep_time.substr(2,4);
+				var r_dep_time_am_pm = arr_input_text[7].replace(/[^a-z]/gi, "");
+				r_dep_time_am_pm = getAMPM(r_dep_time_am_pm);
+				
+				/*** Get Arrival ***/
+				var r_arv = arr_input_text[5].substr(3,3);
+				var r_arv_time = pad(arr_input_text[8].replace(/\D/g, ""),4);
+				r_arv_time = parseInt(r_arv_time.substr(0,2),10) + ":" + r_arv_time.substr(2,4);
+				var r_arv_time_am_pm = arr_input_text[8].replace(/[^a-z]/gi, "");
+				r_arv_time_am_pm = getAMPM(r_arv_time_am_pm);
+				//Show date if deperture date and arrival date is different
+				var r_arv_date = "";
+				if (typeof GetDOW(arr_input_text[10]) != 'undefined'){
+					var r_arv_day = pad(arr_input_text[9].replace(/\D/g, ""),2);
+					var r_arv_day_suffix = AddSuffix(r_arv_day);
+					var	r_arv_month = arr_input_text[9].replace(/[^a-z]/gi, ""); 
+					//r_arv_date = " (" + r_arv_month + " " + r_arv_day + r_arv_day_suffix +")";
+					r_arv_date = " (" + GetNumMonth(r_arv_month) + "/" + r_arv_day +")";
+				}
+				
+				//Generate single line result
+				contents_single += "<tr>";
+				contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_dep_date + "</td>";
+				contents_single += "<td style='width:80px;text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
+				contents_single += "<td style='width:300px;text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ") " + r_dep_time + " " + r_dep_time_am_pm + "</td>";
+				contents_single += "<td style='width:300px;text-align:left;padding-right:10px'>" + GetAirPort(r_arv) + " (" + r_arv + ") " + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
+				contents_single += "</tr>";
+				
+				//Generate multi lines result
+				contents_multi += "<tr>";
+				contents_multi += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_dep_date + "</td>";				
+				contents_multi += "<td style='width:80px;text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
+				contents_multi += "<td style='width:200px;text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ")</td>";
+				contents_multi += "<td style='width:200px;text-align:left'>" + GetAirPort(r_arv) + " (" + r_arv + ")</td>";
+				contents_multi += "</tr>";
+				contents_multi += "<tr>";
+				contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_DOW + "</td>";
+				contents_multi += "<td style='text-align:left;padding-right:10px'></td>";
+				contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_dep_time + " " + r_dep_time_am_pm + "</td>";
+				contents_multi += "<td style='text-align:left'>" + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
+				contents_multi += "</tr>";
+					
+				//Add airline array
+				if(arr_air_lines.indexOf(r_airline) == -1){
+					arr_air_lines[cnt_air_lines] = r_airline;
+					cnt_air_lines++;
+				}
+			}else{
+				//Generate blank line (with 1 cell)
+				contents_single += "<tr>";
+				contents_single += "<td></td>";
+				contents_single += "</tr>";
+				
+				//Generate multi lines result
+				contents_multi += "<tr>";
+				contents_multi += "<td></td>";				
+				contents_multi += "</tr>";
+			}
 		}
 		cnt++;
 	}
@@ -288,6 +302,13 @@ function GetNumMonth(n){
 	return num;
 }
 
+function CheckSkipLine(n){
+	var result = false;
+	if(n.length == 2 && n[1] == 'ARNK'){
+		result = true;
+	}
+	return result;
+}
 
 function CheckFormat(n){
 	var result = true;
@@ -355,6 +376,7 @@ BR: "EVA Airways",
 C6: "CanJet Airlines",
 CA: "Air China",
 CI: "China",
+CM: "COPA AIRLINES",
 CO: "Continental",
 CX: "Cathay",
 CZ: "China Southern",
@@ -4288,6 +4310,14 @@ body{font-family:Arial;}
 			
 			<strong class="instruction">6. You can adjust the pasted contents on your email, if necessary.</strong><br>  
 			<img style="width:80%" src="http://mirukome.com/images/howtofit.png" />
+			<p>
+			</p>
+			
+			<strong class="instruction">(Optional)7. If you add "ARNK" like below, blank line will be added.</strong><br>  
+			<p>1 B6 424Y 16MAY M LAXJFK SS1  1250P  925P /DCB6 /E<br>
+			2 ARNK<br>
+			3 AA  30Y 16MAY M LAXJFK SS1  1130P  758A  17MAY T /DCAA /E <br>
+			</p>
 			<p>
 			</p>
 			
