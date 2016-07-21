@@ -28,7 +28,7 @@ function parsetext(){
 	
 	//Generate reult table header
 	var contents_header = "";
-	contents_header += "<table class='result_header'>";	
+	contents_header += "<table class='result_header' style='font-family:arial'>";	
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Date" + "</th>";
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Flight" + "</th>";
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Departure" + "</th>";
@@ -51,8 +51,9 @@ function parsetext(){
 	//Read each line
 	for(var i = 0;i < input_by_line.length;i++){
 	
-		//Skip if the line is empty
-		if (input_by_line[i].replace(/(\r\n|\n|\r)/gm,"") != ""){
+		//Skip if the line is empty (No skip. Requested by client)
+		//if (input_by_line[i].replace(/(\r\n|\n|\r)/gm,"") != ""){
+		if (1 == 1){
 			
 			//Trim spaces in the head and end of the line
 			input_by_line[i] = input_by_line[i].trim();
@@ -172,12 +173,12 @@ function parsetext(){
 			}else{
 				//Generate blank line (with 1 cell)
 				contents_single += "<tr>";
-				contents_single += "<td style='color:green' colspan='3'>(you can edit here on the email...)</td>";
+				contents_single += "<td colspan='4'>&nbsp</td>";
 				contents_single += "</tr>";
 				
 				//Generate multi lines result
 				contents_multi += "<tr>";
-				contents_multi += "<td style='color:green' colspan='3'>(you can edit here on the email...)</td>";				
+				contents_multi += "<td colspan='4'>&nbsp</td>";				
 				contents_multi += "</tr>";
 			}
 		}
@@ -307,6 +308,11 @@ function CheckSkipLine(n){
 	if(n.length == 2 && n[1] == 'ARNK'){
 		result = true;
 	}
+	
+	if(n.length == 1 && n[0].replace(/(\r\n|\n|\r)/gm,"") == ''){
+		result = true;
+	}
+	
 	return result;
 }
 
@@ -4053,7 +4059,8 @@ IEG	: "	Zielana, Poland",
 ZIH	: "	Zihuatanejo/Ixtapa, Mexico",
 OUZ	: "	Zouerate, Mauritania",
 UGU	: "	Zugapa, Indonesia",
-ZRH	: "	Zurich, Switzerland"};
+ZRH	: "	Zurich, Switzerland",
+SHA : " Shanghai, China"};
 			  
 	return airport[n];
 }
@@ -4338,7 +4345,7 @@ body{font-family:Arial;}
 
 
 <div id="result"></div>
-<div id="result_lines"></div>
+<div id="result_lines" style="font-family:arial"></div>
 
 <input type="hidden" id="hsingle_contents" />
 <input type="hidden" id="hmulti_contents" />
