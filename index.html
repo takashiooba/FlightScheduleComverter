@@ -173,12 +173,12 @@ function parsetext(){
 			}else{
 				//Generate blank line (with 1 cell)
 				contents_single += "<tr>";
-				contents_single += "<td colspan='4'>&nbsp</td>";
+				contents_single += "<td style='font-family:arial' colspan='4'>&nbsp</td>";
 				contents_single += "</tr>";
 				
 				//Generate multi lines result
 				contents_multi += "<tr>";
-				contents_multi += "<td colspan='4'>&nbsp</td>";				
+				contents_multi += "<td style='font-family:arial' colspan='4'>&nbsp</td>";				
 				contents_multi += "</tr>";
 			}
 		}
@@ -363,6 +363,7 @@ function GetAirLine(n){
 
 	var airline = {
 A0: "L'Avion",
+A3: "Aegean Airline",
 A7: "Air Plus Comet",
 AA: "American",
 AC: "Air Canada",
@@ -404,6 +405,7 @@ JK: "Spanair",
 JL: "JAL",
 JM: "Air Jamaica",
 KE: "Korean",
+KL: "KLM Royal Dutch Airline",
 KU: "Kuwait",
 KX: "Cayman",
 LA: "LanChile",
@@ -411,7 +413,7 @@ LH: "Lufthansa",
 LO: "LOT",
 LT: "LTU",
 LW: "Pacific Wings",
-LX: "SWISS",
+LX: "Swiss International Airlines",
 LY: "El Al",
 MA: "MALEV",
 MH: "Malaysia",
@@ -431,7 +433,7 @@ QR: "QATAR AIRWAYS",
 RG: "VARIG",
 SA: "South African",
 SK: "SAS",
-SN: "SN Brussels",
+SN: "Brussels Airlines",
 SQ: "Singapore",
 SU: "Aeroflot",
 SY: "Sun Country",
@@ -4060,7 +4062,9 @@ ZIH	: "	Zihuatanejo/Ixtapa, Mexico",
 OUZ	: "	Zouerate, Mauritania",
 UGU	: "	Zugapa, Indonesia",
 ZRH	: "	Zurich, Switzerland",
-SHA : " Shanghai, China"};
+SHA : " Shanghai, China",
+SCY : " San Cristobal, Ecuador"
+};
 			  
 	return airport[n];
 }
