@@ -4,6 +4,7 @@
 Booking information convert program.
 Author: Takashi Oba
 Date: April 29th 2016
+Revision: Janualy 3rd 2017
 */
 
 function parsetext(){
@@ -14,6 +15,9 @@ function parsetext(){
 	
 	//Get input value	
 	var input = document.getElementById("input-area").value;
+	
+	//Get selected radio button 
+	var selected_line_preference = document.getElementById("selected_resultline").value;	
 	
 	//Check if there are lines
 	if(input == ""){
@@ -209,10 +213,32 @@ function parsetext(){
 		contents_header = "<p>" + cnt + " Line(s) are successfully converted</p>" 		
 		contents_header += "<br>"
 		contents_header += "<div style='width:300px;float:left;margin-bottom:20px'>";
-		contents_header += "<input type='radio' name='resultline' value='single' onclick='show_single_line()' checked> Single line<br>";
-		contents_header += "<input type='radio' name='resultline' value='multi' onclick='show_multi_lines()'> Multi lines<br>";
-		contents_header += "<input type='radio' name='resultline' value='singlewithprice' onclick='show_single_line_with_price()'> Single line with price column<br>";
-		contents_header += "<input type='radio' name='resultline' value='multiwithprice' onclick='show_multi_lines_with_price()'> Multi lines with price column<br>";		
+		
+		//Keep selected radio button when submit button is clicked
+		if(selected_line_preference == "single" || selected_line_preference == ""){
+			show_single_line();
+			contents_header += "<input type='radio' id='r_single_line' name='resultline' value='single' onclick='show_single_line()' checked> Single line<br>";
+		}else{
+			contents_header += "<input type='radio' id='r_single_line' name='resultline' value='single' onclick='show_single_line()'> Single line<br>";	
+		}
+		if(selected_line_preference == "multi"){
+			show_multi_lines();
+			contents_header += "<input type='radio' id='r_multi_line' name='resultline' value='multi' onclick='show_multi_lines()' checked> Multi lines<br>";
+		}else{
+			contents_header += "<input type='radio' id='r_multi_line' name='resultline' value='multi' onclick='show_multi_lines()'> Multi lines<br>";
+		}
+		if(selected_line_preference == "singlewithprice"){
+			show_single_line_with_price();
+			contents_header += "<input type='radio' id='r_single_line_with_price' name='resultline' value='singlewithprice' onclick='show_single_line_with_price()' checked> Single line with price column<br>";	
+		}else{
+			contents_header += "<input type='radio' id='r_single_line_with_price' name='resultline' value='singlewithprice' onclick='show_single_line_with_price()'> Single line with price column<br>";	
+		}		
+		if(selected_line_preference == "multiwithprice"){
+			show_multi_lines_with_price();
+			contents_header += "<input type='radio' id='r_multi_lines_with_price' name='resultline' value='multiwithprice' onclick='show_multi_lines_with_price()' checked> Multi lines with price column<br>";		
+		}else{
+			contents_header += "<input type='radio' id='r_multi_lines_with_price' name='resultline' value='multiwithprice' onclick='show_multi_lines_with_price()'> Multi lines with price column<br>";		
+		}
 		contents_header += "</div>";
 		contents_header += "<div style='clear:both'></div>";
 	}
@@ -238,7 +264,7 @@ function parsetext(){
 	}
 	
 	//Default dispaly is single
-	show_single_line();
+	//show_single_line();
 }
 
 function show_price_column(){
@@ -253,24 +279,6 @@ function show_price_column(){
     }
 }
 
-function show_single_line(){
-	document.getElementById("result_lines").innerHTML = document.getElementById("hsingle_contents").value;
-	//document.getElementById("result_single_line").style.display = "block";
-	//document.getElementById("result_multi_lines").style.display = "none";
-				
-}
-function show_multi_lines(){
-	document.getElementById("result_lines").innerHTML = document.getElementById("hmulti_contents").value;
-	//document.getElementById("result_single_line").style.display = "none";
-	//document.getElementById("result_multi_lines").style.display = "block";	
-}
-function show_single_line_with_price(){
-	document.getElementById("result_lines").innerHTML = document.getElementById("hsingle_contents_withPrice").value;				
-}
-function show_multi_lines_with_price(){
-	document.getElementById("result_lines").innerHTML = document.getElementById("hmulti_contents_withPrice").value;	
-}
-	
 function GetNumMonth(n){
 	var n = n.toUpperCase();
 	var num;
@@ -395,12 +403,14 @@ F9: "Frontier",
 FI: "Icelandair",
 FJ: "Air Pacific",
 FL: "AirTran",
+G3: "VARIG",
 G4: "Allegiant",
 GQ: "Big Sky",
 HA: "Hawaiian",
 HP: "America West",
 HQ: "Harmony",
 IB: "Iberia",
+JJ: "LATAM AIRLINES",
 JK: "Spanair",
 JL: "JAL",
 JM: "Air Jamaica",
@@ -4355,7 +4365,7 @@ body{font-family:Arial;}
 <input type="hidden" id="hmulti_contents" />
 <input type="hidden" id="hsingle_contents_withPrice" />
 <input type="hidden" id="hmulti_contents_withPrice" />
-
+<input type="hidden" id="selected_resultline" />
 <!--For Modal-->
 <script>
 // Get the modal
@@ -4383,6 +4393,27 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
+function show_single_line(){
+	document.getElementById("result_lines").innerHTML = document.getElementById("hsingle_contents").value;
+	//document.getElementById("result_single_line").style.display = "block";
+	//document.getElementById("result_multi_lines").style.display = "none";
+	document.getElementById("selected_resultline").value = 'single'; 
+}
+function show_multi_lines(){
+	document.getElementById("result_lines").innerHTML = document.getElementById("hmulti_contents").value;
+	//document.getElementById("result_single_line").style.display = "none";
+	//document.getElementById("result_multi_lines").style.display = "block";
+	document.getElementById("selected_resultline").value = 'multi'; 	
+}
+function show_single_line_with_price(){
+	document.getElementById("result_lines").innerHTML = document.getElementById("hsingle_contents_withPrice").value;	
+	document.getElementById("selected_resultline").value = 'singlewithprice'; 	
+}
+function show_multi_lines_with_price(){
+	document.getElementById("result_lines").innerHTML = document.getElementById("hmulti_contents_withPrice").value;	
+	document.getElementById("selected_resultline").value = 'multiwithprice'; 		
+}	
 </script>
 
 </body>
