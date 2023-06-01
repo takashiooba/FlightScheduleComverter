@@ -31,12 +31,14 @@ function parsetext(){
 	
 	//Generate reult table header
 	var contents_header = "";
-	contents_header += "<table class='result_header' style='font-family:arial'>";	
+	contents_header += "<table class='result_header' style='font-family:arial'>";
+	contents_header += "<th style='text-align:left;padding-right:10px'></th>";
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Date" + "</th>";
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Flight" + "</th>";
+	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Class" + "</th>";
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Departure" + "</th>";
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Arrival" + "</th>";
-	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Memo" + "</th>";
+	contents_header += "<th style='text-align:left;padding-right:10px'></th>";
 	//contents_header += "<th name='price_column[]' style='text-align:left;display:none'>" + "Price" + "</th>";
 	
 	//Prepare for singe and multi line result
@@ -160,6 +162,9 @@ function parsetext(){
 				}			
 				/***End of input adjustment***/
 				
+				/*** Get segment ***/
+				var r_segment = arr_input_text[0]
+				
 				/*** Get flight ***/
 				var	r_airline = arr_input_text[1];  
 				var r_airline_num = arr_input_text[2].replace(/\D/g, "");
@@ -193,7 +198,7 @@ function parsetext(){
 				//if (typeof GetDOW(arr_input_text[8]) == 'T'){
 				if (arr_input_text[8] == 'T'){
 					//Get next day from the date
-					r_arv_date = " (*Next day)";
+					r_arv_date = " *Next day";
 				
 					//var r_arv_day = pad(arr_input_text[9].replace(/\D/g, ""),2);
 					//var r_arv_day_suffix = AddSuffix(r_arv_day);
@@ -204,7 +209,9 @@ function parsetext(){
 				
 				//If next line is "Operated by xxxx", add it into MEMO column
 				//Trim spaces in the head and end of the line
-				var nextRow = input_by_line[i+1].trim();
+				var nextRow = "";
+				
+				nextRow = (input_by_line[i+1] != undefined) ? input_by_line[i+1].trim() : "";
 				
 				//Replace multiple spaces to single space
 				nextRow = nextRow.replace( /\s\s+/g, ' ' );
@@ -215,8 +222,10 @@ function parsetext(){
 				
 				//Generate single line result
 				contents_single += "<tr>";
-				contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_dep_date + "</td>";
+				contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_segment + "</td>";
+				contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_dep_date + "</td>";			
 				contents_single += "<td style='width:80px;text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
+				contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_class + "</td>";
 				contents_single += "<td style='width:300px;text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ") " + r_dep_time + " " + r_dep_time_am_pm + "</td>";
 				contents_single += "<td style='width:300px;text-align:left;padding-right:10px'>" + GetAirPort(r_arv) + " (" + r_arv + ") " + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
 						
@@ -230,8 +239,10 @@ function parsetext(){
 				
 				//Generate multi lines result
 				contents_multi += "<tr>";
+				contents_multi += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_segment + "</td>";
 				contents_multi += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_dep_date + "</td>";				
 				contents_multi += "<td style='width:80px;text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
+				contents_multi += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_class + "</td>";
 				contents_multi += "<td style='width:200px;text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ")</td>";
 				contents_multi += "<td style='width:200px;text-align:left'>" + GetAirPort(r_arv) + " (" + r_arv + ")</td>";
 				if(nextRow_text[0] == "OPERATED"){
@@ -241,7 +252,9 @@ function parsetext(){
 				}
 				contents_multi += "</tr>";
 				contents_multi += "<tr>";
+				contents_multi += "<td style='text-align:left;padding-right:10px'></td>";
 				contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_DOW + "</td>";
+				contents_multi += "<td style='text-align:left;padding-right:10px'></td>";
 				contents_multi += "<td style='text-align:left;padding-right:10px'></td>";
 				contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_dep_time + " " + r_dep_time_am_pm + "</td>";
 				contents_multi += "<td style='text-align:left'>" + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
@@ -4384,23 +4397,25 @@ body{font-family:Arial;}
 			<strong class="instruction">2. Then you will get a result like below</strong><br><br>  
 			<table>
 				<tr>
+					<th style="width:50px;text-align:left"></th>
 					<th style="width:50px;text-align:left">Date</th>
 					<th style="width:50px;text-align:left">Flight</th>
+					<th style="width:50px;text-align:left">Class</th>
 					<th style="width:300px;text-align:left">Departure</th>
 					<th style="width:300px;text-align:left">Arrival</th>
-					<th style="width:300px;text-align:left">Memo</th>
+					<th style="width:300px;text-align:left"></th>
 				</tr>
 				<tr>
-					<td>09/01</td><td>DL 4005</td><td>Albuquerque, NM (ABQ) 6:00 AM</td><td>Los Angeles, CA (LAX) 7:00 AM</td><td>OPERATED BY SKYWEST DBA DELTA CONNECTION</td>
+					<td>1</td><td>09/01</td><td>DL 4005</td><td>X</td><td>Albuquerque, NM (ABQ) 6:00 AM</td><td>Los Angeles, CA (LAX) 7:00 AM</td><td>OPERATED BY SKYWEST DBA DELTA CONNECTION</td>
 				</tr>
 				<tr>
-					<td>09/01</td><td>DL 7</td><td>Los Angeles, CA (LAX) 9:50 AM</td><td>Tokyo, Japan - Haneda (HND) 2:15 PM (*Next day)<td></td>
+					<td>2</td><td>09/01</td><td>DL 7</td><td>V</td><td>Los Angeles, CA (LAX) 9:50 AM</td><td>Tokyo, Japan - Haneda (HND) 2:15 PM *Next day<td></td>
 				</tr>
 				<tr>
-					<td>11/08</td><td>DL 8</td><td>Tokyo, Japan - Haneda (HND) 7:20 PM</td><td>Los Angeles, CA (LAX) 12:35 PM</td><td></td>
+					<td>3</td><td>11/08</td><td>DL 8</td><td>V</td><td>Tokyo, Japan - Haneda (HND) 7:20 PM</td><td>Los Angeles, CA (LAX) 12:35 PM</td><td></td>
 				</tr>
 				<tr>
-					<td>11/08</td><td>DL 4002</td><td>Los Angeles, CA (LAX) 2:30 PM</td><td>Albuquerque, NM (ABQ) 5:31 PM</td><td>OPERATED BY SKYWEST DBA DELTA CONNECTION</td>
+					<td>4</td><td>11/08</td><td>DL 4002</td><td>V</td><td>Los Angeles, CA (LAX) 2:30 PM</td><td>Albuquerque, NM (ABQ) 5:31 PM</td><td>OPERATED BY SKYWEST DBA DELTA CONNECTION</td>
 				</tr>
 				<tr>
 					<td>DL-Delta</td>
