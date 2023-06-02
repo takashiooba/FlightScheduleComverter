@@ -31,8 +31,8 @@ function parsetext(){
 	
 	//Generate reult table header
 	var contents_header = "";
-	contents_header += "<table class='result_header' style='font-family:arial'>";
-	contents_header += "<th style='text-align:left;padding-right:10px'></th>";
+	contents_header += "<table id='result_table' class='result_header' style='font-family:arial'>";
+	contents_header += "<th style='text-align:left;padding-right:10px'>&nbsp;</th>";
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Date" + "</th>";
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Flight" + "</th>";
 	contents_header += "<th style='text-align:left;padding-right:10px'>" + "Class" + "</th>";
@@ -43,7 +43,9 @@ function parsetext(){
 	
 	//Prepare for singe and multi line result
 	var contents_single = "";
+	var contents_single_price = "";
 	var contents_multi = "";
+	var contents_multi_price = "";
 	
 	//For error lines
 	var arr_error = new Array();
@@ -222,29 +224,46 @@ function parsetext(){
 				
 				//Generate single line result
 				contents_single += "<tr>";
-				contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_segment + "</td>";
-				contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_dep_date + "</td>";			
-				contents_single += "<td style='width:80px;text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
-				contents_single += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_class + "</td>";
-				contents_single += "<td style='width:300px;text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ") " + r_dep_time + " " + r_dep_time_am_pm + "</td>";
-				contents_single += "<td style='width:300px;text-align:left;padding-right:10px'>" + GetAirPort(r_arv) + " (" + r_arv + ") " + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
+				contents_single += "<td style='text-align:left;padding-right:10px'>" + r_segment + "</td>";
+				contents_single += "<td style='text-align:left;padding-right:10px'>" + r_dep_date + "</td>";			
+				contents_single += "<td style='text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
+				contents_single += "<td style='text-align:left;padding-right:10px'>" + r_class + "</td>";
+				contents_single += "<td style='text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ") " + r_dep_time + " " + r_dep_time_am_pm + "</td>";
+				contents_single += "<td style='text-align:left;padding-right:10px'>" + GetAirPort(r_arv) + " (" + r_arv + ") " + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
 						
 				if(nextRow_text[0] == "OPERATED"){
-					contents_single += "<td style='width:300px;text-align:left;'>" + nextRow + "</td>";
+					contents_single += "<td style='text-align:left;'>" + nextRow + "</td>";
 				}else{
 					contents_single += "<td></td>"
 				}
 				
 				contents_single += "</tr>";
 				
+				//Generate single line result with price
+				contents_single_price += "<tr>";
+				contents_single_price += "<td style='text-align:left;padding-right:10px'>" + r_segment + "</td>";
+				contents_single_price += "<td style='text-align:left;padding-right:10px'>" + r_dep_date + "</td>";			
+				contents_single_price += "<td style='text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
+				contents_single_price += "<td style='text-align:left;padding-right:10px'>" + r_class + "</td>";
+				contents_single_price += "<td style='text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ") " + r_dep_time + " " + r_dep_time_am_pm + "</td>";
+				contents_single_price += "<td style='text-align:left;padding-right:10px'>" + GetAirPort(r_arv) + " (" + r_arv + ") " + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
+						
+				if(nextRow_text[0] == "OPERATED"){
+					contents_single_price += "<td style='text-align:left;'>" + nextRow + "</td>";
+				}else{
+					contents_single_price += "<td></td>"
+				}
+				contents_single_price += "<td style='text-align:left;padding-right:10px'>&nbsp;</td>";
+				contents_single_price += "</tr>";
+				
 				//Generate multi lines result
 				contents_multi += "<tr>";
-				contents_multi += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_segment + "</td>";
-				contents_multi += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_dep_date + "</td>";				
-				contents_multi += "<td style='width:80px;text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
-				contents_multi += "<td style='width:50px;text-align:left;padding-right:10px'>" + r_class + "</td>";
-				contents_multi += "<td style='width:200px;text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ")</td>";
-				contents_multi += "<td style='width:200px;text-align:left'>" + GetAirPort(r_arv) + " (" + r_arv + ")</td>";
+				contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_segment + "</td>";
+				contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_dep_date + "</td>";				
+				contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
+				contents_multi += "<td style='text-align:left;padding-right:10px'>" + r_class + "</td>";
+				contents_multi += "<td style='text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ")</td>";
+				contents_multi += "<td style='text-align:left'>" + GetAirPort(r_arv) + " (" + r_arv + ")</td>";
 				if(nextRow_text[0] == "OPERATED"){
 					contents_multi += "<td style='width:300px;text-align:left;'>" + nextRow + "</td>";
 				}else{
@@ -265,16 +284,56 @@ function parsetext(){
 					arr_air_lines[cnt_air_lines] = r_airline;
 					cnt_air_lines++;
 				}
+				
+				//Generate multi lines result with price
+				contents_multi_price += "<tr>";
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'>" + r_segment + "</td>";
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'>" + r_dep_date + "</td>";				
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'>" + r_airline + " " + r_airline_num + "</td>";
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'>" + r_class + "</td>";
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'>" + GetAirPort(r_dep) + " (" + r_dep + ")</td>";
+				contents_multi_price += "<td style='text-align:left'>" + GetAirPort(r_arv) + " (" + r_arv + ")</td>";
+				if(nextRow_text[0] == "OPERATED"){
+					contents_multi_price += "<td style='width:300px;text-align:left;'>" + nextRow + "</td>";
+				}else{
+					contents_multi_price += "<td></td>"
+				}
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'>&nbsp;</td>";
+				contents_multi_price += "</tr>";
+				contents_multi_price += "<tr>";
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'></td>";
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'>" + r_DOW + "</td>";
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'></td>";
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'></td>";
+				contents_multi_price += "<td style='text-align:left;padding-right:10px'>" + r_dep_time + " " + r_dep_time_am_pm + "</td>";
+				contents_multi_price += "<td style='text-align:left'>" + r_arv_time + " " + r_arv_time_am_pm + r_arv_date + "</td>";
+				contents_multi_price += "</tr>";
+					
+				//Add airline array
+				if(arr_air_lines.indexOf(r_airline) == -1){
+					arr_air_lines[cnt_air_lines] = r_airline;
+					cnt_air_lines++;
+				}
 			}else{
 				//Generate blank line (with 1 cell)
 				contents_single += "<tr>";
 				contents_single += "<td style='font-family:arial' colspan='4'>&nbsp</td>";
 				contents_single += "</tr>";
 				
+				//Generate blank line (with 1 cell) with price
+				contents_single_price += "<tr>";
+				contents_single_price += "<td style='font-family:arial' colspan='4'>&nbsp</td>";
+				contents_single_price += "</tr>";
+				
 				//Generate multi lines result
 				contents_multi += "<tr>";
 				contents_multi += "<td style='font-family:arial' colspan='4'>&nbsp</td>";				
 				contents_multi += "</tr>";
+				
+				//Generate multi lines result with price
+				contents_multi_price += "<tr>";
+				contents_multi_price += "<td style='font-family:arial' colspan='4'>&nbsp</td>";				
+				contents_multi_price += "</tr>";
 			}
 		}
 		cnt++;
@@ -292,12 +351,12 @@ function parsetext(){
 	//Add single line result to the contents
 	//contents += "<div id='result_single_line'>" + contents_header + contents_single + "</table></div>";	
 	document.getElementById("hsingle_contents").value = "<div id='result_single_line'>" + contents_header + contents_single + "</table></div><br>" + contents_air_lines;
-	document.getElementById("hsingle_contents_withPrice").value = "<div id='result_single_line'>" + contents_header + price_colunn + contents_single + "</table></div><br>" + contents_air_lines;
+	document.getElementById("hsingle_contents_withPrice").value = "<div id='result_single_line'>" + contents_header + price_colunn + contents_single_price + "</table></div><br>" + contents_air_lines;
 	
 	//Add multi lines result to the contents
 	//contents += "<div id='result_multi_lines'>" + contents_header + contents_multi + "</table></div>";
 	document.getElementById("hmulti_contents").value = "<div id='result_multi_lines'>" + contents_header + contents_multi + "</table></div><br>" + contents_air_lines;
-	document.getElementById("hmulti_contents_withPrice").value = "<div id='result_multi_lines'>" + contents_header + price_colunn + contents_multi + "</table></div><br>" + contents_air_lines;
+	document.getElementById("hmulti_contents_withPrice").value = "<div id='result_multi_lines'>" + contents_header + price_colunn + contents_multi_price + "</table></div><br>" + contents_air_lines;
 	
 	//line handling radio button and price colunn handling checkbox
 	if (cnt > 0){
@@ -352,6 +411,7 @@ function parsetext(){
 		}
 		error_contents += "</table><br>";
 		document.getElementById("result_error").innerHTML = error_contents;
+		copyBtn.style.display = "none";
 	}
 	
 	//Default dispaly is single
@@ -442,6 +502,18 @@ function resultclear(){
 	document.getElementById("result").innerHTML = "";
 	document.getElementById("result_error").innerHTML = "";
 	document.getElementById("input-area").value = "";
+	document.getElementById("result_lines").innerHTML = "";
+
+}
+
+function resultcopy(){
+	let table = document.getElementById('result_table').outerHTML;
+
+	navigator.clipboard.writeText(table).then(function() {
+		console.log('Copying to clipboard was successful!');
+	}, function(err) {
+		console.error('Could not copy text: ', err);
+	});
 }
 
 function GetDOW(n){
@@ -4367,6 +4439,7 @@ body{font-family:Arial;}
   background-image: linear-gradient(to bottom, #c9cccf, #848a91);
   text-decoration: none;
 }
+
 </style>
 
 <body>
@@ -4459,8 +4532,9 @@ body{font-family:Arial;}
   
 <textarea id="input-area"  placeholder="paste here" ></textarea>
 <br>
-<button class="submitBtn" onclick="parsetext()" >submit</button>
-<button class="clearBtn" onclick="resultclear()" >clear</button>
+<button class="submitBtn" onclick="parsetext()" >Submit</button>
+<button class="clearBtn" onclick="resultclear()" >Clear</button>
+
 
 <div id="result_error"></div>
 
@@ -4473,6 +4547,7 @@ body{font-family:Arial;}
 <input type="hidden" id="hsingle_contents_withPrice" />
 <input type="hidden" id="hmulti_contents_withPrice" />
 <input type="hidden" id="selected_resultline" />
+
 <!--For Modal-->
 <script>
 // Get the modal
